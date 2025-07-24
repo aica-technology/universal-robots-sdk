@@ -37,25 +37,33 @@ public class AICASystemClientProgramNodeContribution implements ProgramNodeContr
 	}
 
 	private void updateUI() {
+		String ip;
+		String key;
 		if (getInstallation().isIpSet()) {
-			setIpAndVar(getInstallation().getIp(), getInstallation().getXMLRPCVariable());
+			ip = getInstallation().getIp();
 		} else {
-			setIpAndVar("Set the AICA Core IP in the installation node", getInstallation().getXMLRPCVariable());
+			ip = "Set the AICA Core IP in the installation node";
 		}
-		
+		if (getInstallation().isKeySet()) {
+			key = "******";
+		} else {
+			key = "Set the AICA API Key in the installation node";
+		}
+		setPreviews(ip, key, getInstallation().getXMLRPCVariable());
 	}
 
-	private void setIpAndVar(final String ip, final String var) {
+	private void setPreviews(final String ip, final String key, final String var) {
 		EventQueue.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				AICASystemClientProgramNodeContribution.this.updatePreview(ip, var);
+				AICASystemClientProgramNodeContribution.this.updatePreview(ip, key, var);
 			}
 		});
 	}
 
-	private void updatePreview(String ip, String var) {
+	private void updatePreview(String ip, String key, String var) {
 		view.setIpPreview(ip);
+		view.setKeyPreview(key);
 		view.setVarPreview(var);
 		updateUI();
 	}
@@ -72,7 +80,7 @@ public class AICASystemClientProgramNodeContribution implements ProgramNodeContr
 
 	@Override
 	public boolean isDefined() {
-		return daemonStatusMonitor.isDaemonReachable() && getInstallation().isIpSet();
+		return daemonStatusMonitor.isDaemonReachable() && getInstallation().isIpSet() && getInstallation().isKeySet();
 	}
 
 	@Override

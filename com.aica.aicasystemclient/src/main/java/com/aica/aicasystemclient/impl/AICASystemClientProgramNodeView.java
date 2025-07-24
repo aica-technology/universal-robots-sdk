@@ -5,6 +5,8 @@ import com.ur.urcap.api.contribution.program.swing.SwingProgramNodeView;
 import com.ur.urcap.api.domain.userinteraction.keyboard.KeyboardTextInput;
 
 import javax.swing.*;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -13,6 +15,7 @@ public class AICASystemClientProgramNodeView implements SwingProgramNodeView<AIC
 
 	private final Style style;
 	private JLabel ipPreviewLabel;
+	private JLabel keyPreviewLabel;
 	private JLabel varPreviewLabel;
 
 	public AICASystemClientProgramNodeView(Style style) {
@@ -32,8 +35,18 @@ public class AICASystemClientProgramNodeView implements SwingProgramNodeView<AIC
 	private Box createInfo() {
 		Box infoBox = Box.createVerticalBox();
 		infoBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		infoBox.add(new JLabel("This program node will connect to the AICA API using the XMLRPC server.\n" +
-							   "Use the variable below to make appropriate XMLRPC calls in program nodes."));
+		JTextPane pane = new JTextPane();
+		pane.setBorder(BorderFactory.createEmptyBorder());
+		SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+		StyleConstants.setLineSpacing(attributeSet, 0.5f);
+		StyleConstants.setLeftIndent(attributeSet, 0f);
+		pane.setParagraphAttributes(attributeSet, false);
+		pane.setText("This program node will connect to the AICA API using the XMLRPC server.\n" +
+					 "Use the variable below to make appropriate XMLRPC calls in program nodes.");
+		pane.setEditable(false);
+		pane.setMaximumSize(pane.getPreferredSize());
+		pane.setBackground(infoBox.getBackground());
+		infoBox.add(pane);
 		return infoBox;
 	}
 
@@ -46,23 +59,33 @@ public class AICASystemClientProgramNodeView implements SwingProgramNodeView<AIC
 
 		box.add(createVerticalSpacing(style.getLargeVerticalSpacing()));
 
-		Box titleBox = Box.createHorizontalBox();
-		titleBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		titleBox.add(new JLabel("AICA Core IP:"));
-		titleBox.add(createHorizontalSpacing());
+		Box ipBox = Box.createHorizontalBox();
+		ipBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		ipBox.add(new JLabel("AICA Core IP:"));
+		ipBox.add(createHorizontalSpacing());
 		ipPreviewLabel = new JLabel();
-		titleBox.add(ipPreviewLabel);
-		box.add(titleBox);
+		ipBox.add(ipPreviewLabel);
+		box.add(ipBox);
 
 		box.add(createVerticalSpacing());
 
-		Box messageBox = Box.createHorizontalBox();
-		messageBox.setAlignmentX(Component.LEFT_ALIGNMENT);
-		messageBox.add(new JLabel("XMLRPC Variable:"));
-		messageBox.add(createHorizontalSpacing());
+		Box keyBox = Box.createHorizontalBox();
+		keyBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		keyBox.add(new JLabel("AICA API Key:"));
+		keyBox.add(createHorizontalSpacing());
+		keyPreviewLabel = new JLabel();
+		keyBox.add(keyPreviewLabel);
+		box.add(keyBox);
+
+		box.add(createVerticalSpacing());
+
+		Box varBox = Box.createHorizontalBox();
+		varBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+		varBox.add(new JLabel("XMLRPC Variable:"));
+		varBox.add(createHorizontalSpacing());
 		varPreviewLabel = new JLabel();
-		messageBox.add(varPreviewLabel);
-		box.add(messageBox);
+		varBox.add(varPreviewLabel);
+		box.add(varBox);
 
 		return box;
 	}
@@ -81,6 +104,10 @@ public class AICASystemClientProgramNodeView implements SwingProgramNodeView<AIC
 
 	public void setIpPreview(String title) {
 		ipPreviewLabel.setText(title);
+	}
+
+	public void setKeyPreview(String title) {
+		keyPreviewLabel.setText(title);
 	}
 
 	public void setVarPreview(String title) {

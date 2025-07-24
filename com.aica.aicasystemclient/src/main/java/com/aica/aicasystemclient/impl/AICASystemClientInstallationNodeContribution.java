@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class AICASystemClientInstallationNodeContribution implements InstallationNodeContribution {
 	private static final String IP_KEY = "aicacoreip";
 	private static final String KEY_KEY = "aicaapikey";
-	private static final String XMLRPC_VARIABLE = "aica";
+	private static final String XMLRPC_VARIABLE = "aica_api";
 	private static final String ENABLED_KEY = "enabled";
 	private static final long DAEMON_TIME_OUT_NANO_SECONDS = TimeUnit.SECONDS.toNanos(20);
 	private static final long RETRY_TIME_TO_WAIT_MILLI_SECONDS = TimeUnit.SECONDS.toMillis(1);
