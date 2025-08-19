@@ -159,42 +159,42 @@ class Client:
         self.aica = AICA(url=url, api_key=api_key)
         return self.aica.check()
     
-    def decorator(func):
+    def ensure_client(func):
         def wrapper(*args, **kwargs):
             if not hasattr(args[0], 'aica') or not args[0].aica.check():
                 raise RuntimeError('AICA API is not connected')
             return func(*args, **kwargs)
         return wrapper
     
-    @decorator
+    @ensure_client
     def call_component_service(self, component, service, payload):
         endpoint = 'application/components/' + AICA._safe_uri(component) + '/service/' + AICA._safe_uri(service)
         return self.aica.request('PUT', endpoint, json_data={'payload': payload}).status_code == 202
 
-    @decorator
+    @ensure_client
     def call_controller_service(self, hardware, controller, service, payload):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controller/' + AICA._safe_uri(controller) + '/service/' + AICA._safe_uri(service)
         return self.aica.request('PUT', endpoint, json_data={'payload': payload}).status_code == 202
 
-    @decorator
+    @ensure_client
     def load_component(self, component):
         return self.aica.request('PUT', 'application/components/' + AICA._safe_uri(component)).status_code == 202
 
-    @decorator
+    @ensure_client
     def load_controller(self, hardware, controller):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controller/' + AICA._safe_uri(controller)
         return self.aica.request('PUT', endpoint).status_code == 202
 
-    # @decorator
+    # @ensure_client
     # def load_hardware(self, hardware):
     #     return self.aica.request('PUT', 'application/hardware/' + AICA._safe_uri(hardware)).status_code == 202
     
-    @decorator
+    @ensure_client
     def set_component_parameter(self, component, parameter, value):
         endpoint = 'application/components/' + AICA._safe_uri(component) + '/parameter/' + AICA._safe_uri(parameter)
         return self.aica.request('PUT', endpoint, json_data={'value': value}).status_code == 202
 
-    # @decorator
+    # @ensure_client
     # def set_application(self, application_name):
     #     safe_application_name = urllib.quote(application_name, safe='')
     #     res = self.aica.request('GET', 'data/applications/' + safe_application_name)
@@ -203,55 +203,55 @@ class Client:
     #         return self.aica.request('PUT', 'application', json_data={'payload': res.json["yaml"]}).status_code == 204
     #     return False
 
-    # @decorator
+    # @ensure_client
     # def start_application(self):
     #     return self.aica.request('PUT', 'application/state/transition', params={'action': 'start'}).status_code == 204
 
-    # @decorator
+    # @ensure_client
     # def stop_application(self):
     #     return self.aica.request('PUT', 'application/state/transition', params={'action': 'stop'}).status_code == 204
     
-    @decorator
+    @ensure_client
     def set_component_parameter(self, component, parameter, value):
         endpoint = 'application/components/' + AICA._safe_uri(component) + '/parameter/' + AICA._safe_uri(parameter)
         return self.aica.request('PUT', endpoint, json_data={'value': value}).status_code == 202
 
-    @decorator
+    @ensure_client
     def set_controller_parameter(self, hardware, controller, parameter, value):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controller/' + AICA._safe_uri(controller) + '/parameter/' + AICA._safe_uri(parameter)
         return self.aica.request('PUT', endpoint, json_data={'value': value}).status_code == 202
 
-    @decorator
+    @ensure_client
     def set_lifecycle_transition(self, component, transition):
         endpoint = 'application/components/' + AICA._safe_uri(component) + '/lifecycle/transition'
         return self.aica.request('PUT', endpoint, json_data={'transition': transition}).status_code == 202
 
-    @decorator
+    @ensure_client
     def activate_controller(self, hardware, controller):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controllers'
         return self.aica.request('PUT', endpoint, params={'activate': controller}).status_code == 202
 
-    @decorator
+    @ensure_client
     def deactivate_controller(self, hardware, controller):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controllers'
         return self.aica.request('PUT', endpoint, params={'deactivate': controller}).status_code == 202
 
-    @decorator
+    @ensure_client
     def unload_component(self, component):
         endpoint = 'application/components/' + AICA._safe_uri(component)
         return self.aica.request('DELETE', endpoint).status_code == 202
 
-    @decorator
+    @ensure_client
     def unload_controller(self, hardware, controller):
         endpoint = 'application/hardware/' + AICA._safe_uri(hardware) + '/controller/' + AICA._safe_uri(controller)
         return self.aica.request('DELETE', endpoint).status_code == 202
 
-    # @decorator
+    # @ensure_client
     # def unload_hardware(self, hardware):
     #     endpoint = 'application/hardware/' + AICA._safe_uri(hardware)
     #     return self.aica.request('DELETE', endpoint).status_code == 202
 
-    @decorator
+    @ensure_client
     def manage_sequence(self, sequence_name, action):
         endpoint = 'application/sequences/' + AICA._safe_uri(sequence_name)
         return self.aica.request('PUT', endpoint, params={'action': AICA._safe_uri(action)}).status_code == 204
